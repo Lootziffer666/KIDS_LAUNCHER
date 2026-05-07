@@ -1,0 +1,23 @@
+/* Kids Launcher — Components */
+.launcher-header {
+  padding: 2rem;
+  text-align: center;
+}
+
+.launcher-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.launcher-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.launcher-loading {
+  font-size: 1.5rem;
+  color: var(--color-muted);
+}
