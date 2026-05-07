@@ -1,1 +1,256 @@
-[]
+[
+  {
+    "id": "lego-star-wars-skywalker-saga",
+    "title": "LEGO Star Wars: The Skywalker Saga",
+    "source": "steam",
+    "launchType": "steam",
+    "launchTarget": "steam://rungameid/920210",
+    "coverImage": "assets/covers/lego-star-wars.jpg",
+    "trailerUrl": "https://www.youtube.com/watch?v=sRBaFbBhl4g",
+    "players": {
+      "min": 1,
+      "max": 2,
+      "localCoop": true,
+      "onlineCoop": false,
+      "competitive": false
+    },
+    "ratings": {
+      "pegi": 7,
+      "usk": 6,
+      "reasons": [
+        "Cartoon Violence"
+      ]
+    },
+    "parent": {
+      "approval": "approved",
+      "notes": "Okay für Jake. Zusammen spielen!",
+      "reviewedStorePage": true
+    },
+    "profiles": {
+      "jake": "approved",
+      "luke": "approved"
+    }
+  },
+  {
+    "id": "minecraft",
+    "title": "Minecraft",
+    "source": "microsoft-store",
+    "launchType": "exec",
+    "launchTarget": "minecraft://",
+    "coverImage": "assets/covers/minecraft.jpg",
+    "trailerUrl": "https://www.youtube.com/watch?v=MmB9b5njVbA",
+    "players": {
+      "min": 1,
+      "max": 8,
+      "localCoop": true,
+      "onlineCoop": true,
+      "competitive": false
+    },
+    "ratings": {
+      "pegi": 7,
+      "usk": 6,
+      "reasons": [
+        "Mild Violence"
+      ]
+    },
+    "parent": {
+      "approval": "approved",
+      "notes": "Online nur mit Freunden.",
+      "reviewedStorePage": true
+    },
+    "profiles": {
+      "jake": "approved",
+      "luke": "approved"
+    }
+  },
+  {
+    "id": "rocket-league",
+    "title": "Rocket League",
+    "source": "epic",
+    "launchType": "exec",
+    "launchTarget": "com.epicgames.launcher://apps/Sugar?action=launch",
+    "coverImage": "assets/covers/rocket-league.jpg",
+    "trailerUrl": "https://www.youtube.com/watch?v=Nt9L1jCKGnE",
+    "players": {
+      "min": 1,
+      "max": 4,
+      "localCoop": true,
+      "onlineCoop": true,
+      "competitive": true
+    },
+    "ratings": {
+      "pegi": 3,
+      "usk": 0,
+      "reasons": []
+    },
+    "parent": {
+      "approval": "approved",
+      "notes": "",
+      "reviewedStorePage": true
+    },
+    "profiles": {
+      "jake": "approved",
+      "luke": "blocked"
+    }
+  },
+  {
+    "id": "stardew-valley",
+    "title": "Stardew Valley",
+    "source": "steam",
+    "launchType": "steam",
+    "launchTarget": "steam://rungameid/413150",
+    "coverImage": "assets/covers/stardew-valley.jpg",
+    "trailerUrl": "https://www.youtube.com/watch?v=ot7uXNQskhs",
+    "players": {
+      "min": 1,
+      "max": 4,
+      "localCoop": false,
+      "onlineCoop": true,
+      "competitive": false
+    },
+    "ratings": {
+      "pegi": 7,
+      "usk": 0,
+      "reasons": [
+        "Mild Violence"
+      ]
+    },
+    "parent": {
+      "approval": "needs-review",
+      "notes": "Noch nicht zusammen angeschaut.",
+      "reviewedStorePage": false
+    },
+    "profiles": {
+      "jake": "needs-review",
+      "luke": "unknown"
+    }
+  },
+  {
+    "id": "fortnite",
+    "title": "Fortnite",
+    "source": "epic",
+    "launchType": "exec",
+    "launchTarget": "com.epicgames.launcher://apps/Fortnite?action=launch",
+    "coverImage": "assets/covers/fortnite.jpg",
+    "trailerUrl": "https://www.youtube.com/watch?v=WJW_lL1SVJo",
+    "players": {
+      "min": 1,
+      "max": 4,
+      "localCoop": false,
+      "onlineCoop": true,
+      "competitive": true
+    },
+    "ratings": {
+      "pegi": 12,
+      "usk": 12,
+      "reasons": [
+        "Violence"
+      ]
+    },
+    "parent": {
+      "approval": "blocked",
+      "notes": "Nicht für Luke. Jake darf unter Aufsicht.",
+      "reviewedStorePage": true
+    },
+    "profiles": {
+      "jake": "approved",
+      "luke": "blocked"
+    }
+  },
+  {
+    "id": "zelda-totk",
+    "title": "The Legend of Zelda: Tears of the Kingdom",
+    "source": "nintendo",
+    "launchType": "exec",
+    "launchTarget": "switch://0100F2C0115B6000",
+    "coverImage": "assets/covers/zelda-totk.jpg",
+    "trailerUrl": "https://www.youtube.com/watch?v=uHGShqcAHlQ",
+    "players": {
+      "min": 1,
+      "max": 1,
+      "localCoop": false,
+      "onlineCoop": false,
+      "competitive": false
+    },
+    "ratings": {
+      "pegi": 12,
+      "usk": 12,
+      "reasons": [
+        "Fantasy Violence"
+      ]
+    },
+    "parent": {
+      "approval": "approved",
+      "notes": "Jakes Liebling. Darf alleine spielen.",
+      "reviewedStorePage": true
+    },
+    "profiles": {
+      "jake": "approved",
+      "luke": "hidden"
+    }
+  },
+  {
+    "id": "overcooked-2",
+    "title": "Overcooked! 2",
+    "source": "steam",
+    "launchType": "steam",
+    "launchTarget": "steam://rungameid/728880",
+    "coverImage": "assets/covers/overcooked-2.jpg",
+    "trailerUrl": "https://www.youtube.com/watch?v=oMU6G4_MTDE",
+    "players": {
+      "min": 1,
+      "max": 4,
+      "localCoop": true,
+      "onlineCoop": true,
+      "competitive": false
+    },
+    "ratings": {
+      "pegi": 3,
+      "usk": 0,
+      "reasons": []
+    },
+    "parent": {
+      "approval": "approved",
+      "notes": "Familien-Favorit!",
+      "reviewedStorePage": true
+    },
+    "profiles": {
+      "jake": "approved",
+      "luke": "approved"
+    }
+  },
+  {
+    "id": "cyberpunk-2077",
+    "title": "Cyberpunk 2077",
+    "source": "steam",
+    "launchType": "steam",
+    "launchTarget": "steam://rungameid/1091500",
+    "coverImage": "assets/covers/cyberpunk-2077.jpg",
+    "trailerUrl": "https://www.youtube.com/watch?v=8X2kIfS6fb8",
+    "players": {
+      "min": 1,
+      "max": 1,
+      "localCoop": false,
+      "onlineCoop": false,
+      "competitive": false
+    },
+    "ratings": {
+      "pegi": 18,
+      "usk": 18,
+      "reasons": [
+        "Extreme Violence",
+        "Sexual Content",
+        "Drug Use"
+      ]
+    },
+    "parent": {
+      "approval": "blocked",
+      "notes": "Nicht für Kinder.",
+      "reviewedStorePage": true
+    },
+    "profiles": {
+      "jake": "blocked",
+      "luke": "blocked"
+    }
+  }
+]
