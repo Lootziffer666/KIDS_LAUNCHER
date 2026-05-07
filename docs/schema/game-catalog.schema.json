@@ -1,0 +1,191 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Kids Launcher Game Catalog",
+  "description": "Schema for the local game catalog. Each entry represents a game managed by parents for child profiles.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": [
+      "id",
+      "title",
+      "source",
+      "launchType",
+      "launchTarget",
+      "coverImage",
+      "players",
+      "ratings",
+      "parent",
+      "profiles"
+    ],
+    "properties": {
+      "id": {
+        "type": "string",
+        "description": "Unique slug identifier for the game",
+        "pattern": "^[a-z0-9][a-z0-9-]*$"
+      },
+      "title": {
+        "type": "string",
+        "description": "Display name of the game"
+      },
+      "source": {
+        "type": "string",
+        "description": "Where the game was acquired",
+        "enum": [
+          "steam",
+          "epic",
+          "gog",
+          "microsoft-store",
+          "nintendo",
+          "playstation",
+          "xbox",
+          "itch",
+          "manual"
+        ]
+      },
+      "launchType": {
+        "type": "string",
+        "description": "How to launch the game",
+        "enum": [
+          "steam",
+          "exec",
+          "url",
+          "manual"
+        ]
+      },
+      "launchTarget": {
+        "type": "string",
+        "description": "URI or command to launch the game"
+      },
+      "coverImage": {
+        "type": "string",
+        "description": "Relative path to local cover image"
+      },
+      "trailerUrl": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "description": "URL to a trailer video (optional)",
+        "format": "uri"
+      },
+      "players": {
+        "type": "object",
+        "required": [
+          "min",
+          "max",
+          "localCoop",
+          "onlineCoop",
+          "competitive"
+        ],
+        "properties": {
+          "min": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "max": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "localCoop": {
+            "type": "boolean"
+          },
+          "onlineCoop": {
+            "type": "boolean"
+          },
+          "competitive": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ratings": {
+        "type": "object",
+        "required": [
+          "pegi",
+          "usk",
+          "reasons"
+        ],
+        "description": "INFORMATION ONLY. These do NOT automatically block games. Parents decide.",
+        "properties": {
+          "pegi": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "enum": [
+              null,
+              3,
+              7,
+              12,
+              16,
+              18
+            ]
+          },
+          "usk": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "enum": [
+              null,
+              0,
+              6,
+              12,
+              16,
+              18
+            ]
+          },
+          "reasons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "parent": {
+        "type": "object",
+        "required": [
+          "approval",
+          "notes",
+          "reviewedStorePage"
+        ],
+        "description": "Parent-level curation. This is the AUTHORITY, not ratings.",
+        "properties": {
+          "approval": {
+            "type": "string",
+            "enum": [
+              "unknown",
+              "needs-review",
+              "approved",
+              "blocked",
+              "hidden"
+            ],
+            "description": "Parent's global decision about this game"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Free-text parent note"
+          },
+          "reviewedStorePage": {
+            "type": "boolean",
+            "description": "Whether parent has reviewed the store page"
+          }
+        }
+      },
+      "profiles": {
+        "type": "object",
+        "description": "Per-child-profile approval states",
+        "additionalProperties": {
+          "type": "string",
+          "enum": [
+            "unknown",
+            "needs-review",
+            "approved",
+            "blocked",
+            "hidden"
+          ]
+        }
+      }
+    }
+  }
+}
