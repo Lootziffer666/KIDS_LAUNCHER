@@ -211,6 +211,10 @@ const App = (() => {
   function actionConfirm() {
     if (filteredGames.length === 0) return;
     const game = filteredGames[focusIndex];
+    // Close info overlay if open, then launch
+    if (infoOverlay.getAttribute('data-visible') === 'true') {
+      closeInfo();
+    }
     showToast(`Launch requested: ${game.title}`);
     console.log(`[confirm] Would launch: ${game.launchTarget}`);
   }
@@ -240,15 +244,53 @@ const App = (() => {
     }
   }
 
-  // ── Info Overlay (minimal — Gate 8 completes) ──
+  // ── Info Overlay (Gate 8: Small Info Window) ──
   function openInfo(game) {
     infoOverlay.setAttribute('data-visible', 'true');
     const g = GlyphProfiles.get();
+    
+    // Players info
+    const playerRange = game.players.min === game.players.max
+      ? `${game.players.min}`
+      : `${game.players.min}–${game.players.max}`;
+    
+    const coopLines = [];
+    coopLines.push(`Spieler: ${playerRange}`);
+    coopLines.push(`Lokal Coop: ${game.players.localCoop ? 'Ja' : 'Nein'}`);
+    coopLines.push(`Online Coop: ${game.players.onlineCoop ? 'Ja' : 'Nein'}`);
+    coopLines.push(`Kompetitiv: ${game.players.competitive ? 'Ja' : 'Nein'}`);
+    
+    // Ratings (info only!)
+    let ratingsHtml = '';
+    if (game.ratings.pegi || game.ratings.usk) {
+      const parts = [];
+      if (game.ratings.pegi) parts.push(`PEGI ${game.ratings.pegi}`);
+      if (game.ratings.usk) parts.push(`USK ${game.ratings.usk}`);
+      ratingsHtml = `<div class="info-panel__ratings">${parts.join(' · ')}`;
+      if (game.ratings.reasons && game.ratings.reasons.length > 0) {
+        ratingsHtml += `<br><span class="info-panel__reasons">${game.ratings.reasons.join(', ')}</span>`;
+      }
+      ratingsHtml += `</div>`;
+    }
+    
+    // Parent note
+    let noteHtml = '';
+    if (game.parent && game.parent.notes && game.parent.notes.trim()) {
+      noteHtml = `<div class="info-panel__note">📝 ${game.parent.notes}</div>`;
+    }
+    
     infoOverlay.innerHTML = `
-      <div class="info-panel">
+      <div class="info-panel" role="dialog" aria-label="Spielinfo: ${game.title}">
         <h2 class="info-panel__title">${game.title}</h2>
-        <p class="info-panel__hint">Info-Overlay (Gate 8 baut das aus)</p>
-        <p class="info-panel__close-hint">${g.back} / Escape → Schließen</p>
+        <div class="info-panel__players">
+          ${coopLines.map(l => `<div class="info-panel__line">${l}</div>`).join('')}
+        </div>
+        ${ratingsHtml}
+        ${noteHtml}
+        <div class="info-panel__actions">
+          <span class="info-panel__action">${g.confirm} Start</span>
+          <span class="info-panel__action">${g.back} Schließen</span>
+        </div>
       </div>
     `;
   }
