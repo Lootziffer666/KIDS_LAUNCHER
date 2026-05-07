@@ -1,18 +1,95 @@
 /* Kids Launcher — Main Script
    Gate 6: Library Grid v0
-   - Loads games from content/games.sample.json
-   - Filters by active profile (only "approved" games shown)
-   - Keyboard-based controller simulation
-   - No real launches — only "Launch requested" toast */
+   Gate 7: Glyph Profiles (Xbox / PlayStation / Nintendo)
+   - Display-only toggle, internal actions unchanged
+   - Stored in localStorage */
 
 'use strict';
 
+// ── Glyph Profile System ──
+const GlyphProfiles = (() => {
+  const STORAGE_KEY = 'kids-launcher-glyph-profile';
+
+  // Internal actions → display labels per profile
+  const profiles = {
+    xbox: {
+      label: 'Xbox',
+      confirm: 'A',
+      back:    'B',
+      info:    'X',
+      trailer: 'Y'
+    },
+    playstation: {
+      label: 'PlayStation',
+      confirm: '✕',
+      back:    '○',
+      info:    '□',
+      trailer: '△'
+    },
+    nintendo: {
+      label: 'Nintendo',
+      confirm: 'B',
+      back:    'A',
+      info:    'Y',
+      trailer: 'X'
+    }
+  };
+
+  let current = 'xbox';
+
+  function load() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved && profiles[saved]) {
+      current = saved;
+    }
+    return current;
+  }
+
+  function save() {
+    localStorage.setItem(STORAGE_KEY, current);
+  }
+
+  function get() {
+    return profiles[current];
+  }
+
+  function getName() {
+    return current;
+  }
+
+  function set(name) {
+    if (!profiles[name]) {
+      console.warn(`Unknown glyph profile: ${name}`);
+      return false;
+    }
+    current = name;
+    save();
+    return true;
+  }
+
+  function cycle() {
+    const names = Object.keys(profiles);
+    const idx = names.indexOf(current);
+    current = names[(idx + 1) % names.length];
+    save();
+    return current;
+  }
+
+  function getAll() {
+    return Object.keys(profiles);
+  }
+
+  return { load, get, getName, set, cycle, getAll };
+})();
+
+
+// ── Main App ──
 const App = (() => {
   // ── State ──
   let games = [];
   let filteredGames = [];
   let focusIndex = 0;
-  let activeProfile = 'jake'; // default child profile
+  let activeProfile = 'jake';
 
   // ── DOM ──
   const grid = document.getElementById('library-grid');
@@ -23,6 +100,9 @@ const App = (() => {
 
   // ── Init ──
   async function init() {
+    // Load glyph profile from localStorage
+    GlyphProfiles.load();
+
     try {
       const res = await fetch('content/games.sample.json');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -37,7 +117,9 @@ const App = (() => {
     filterByProfile();
     render();
     bindKeys();
-    console.log(`Kids Launcher ready. Profile: ${activeProfile}`);
+    updateGlyphIndicator();
+    updateFocusBarGlyphs();
+    console.log(`Kids Launcher ready. Profile: ${activeProfile}, Glyphs: ${GlyphProfiles.getName()}`);
   }
 
   // ── Profile filter ──
@@ -53,6 +135,7 @@ const App = (() => {
   function render() {
     if (filteredGames.length === 0) {
       loadingText.textContent = 'Keine Spiele freigegeben.';
+      loadingText.style.display = '';
       grid.style.display = 'none';
       focusBar.style.display = 'none';
       return;
@@ -71,13 +154,11 @@ const App = (() => {
       card.setAttribute('data-game-id', game.id);
       if (i === focusIndex) card.setAttribute('data-focused', 'true');
 
-      // Cover image with fallback
       const cover = document.createElement('div');
       cover.className = 'game-card__cover-placeholder';
       cover.textContent = game.title.charAt(0);
       card.appendChild(cover);
 
-      // Title overlay
       const title = document.createElement('div');
       title.className = 'game-card__title';
       title.textContent = game.title;
@@ -100,12 +181,11 @@ const App = (() => {
 
   function getGridColumns() {
     if (filteredGames.length === 0) return 1;
-    const gridEl = grid;
-    const firstCard = gridEl.querySelector('.game-card');
+    const firstCard = grid.querySelector('.game-card');
     if (!firstCard) return 1;
-    const gridWidth = gridEl.offsetWidth;
+    const gridWidth = grid.offsetWidth;
     const cardWidth = firstCard.offsetWidth;
-    const gap = parseFloat(getComputedStyle(gridEl).gap) || 24;
+    const gap = parseFloat(getComputedStyle(grid).gap) || 24;
     return Math.max(1, Math.floor((gridWidth + gap) / (cardWidth + gap)));
   }
 
@@ -136,7 +216,6 @@ const App = (() => {
   }
 
   function actionBack() {
-    // Close info overlay if open
     if (infoOverlay.getAttribute('data-visible') === 'true') {
       closeInfo();
       return;
@@ -161,14 +240,15 @@ const App = (() => {
     }
   }
 
-  // ── Info Overlay (minimal — Gate 8 will complete) ──
+  // ── Info Overlay (minimal — Gate 8 completes) ──
   function openInfo(game) {
     infoOverlay.setAttribute('data-visible', 'true');
+    const g = GlyphProfiles.get();
     infoOverlay.innerHTML = `
       <div class="info-panel">
         <h2 class="info-panel__title">${game.title}</h2>
         <p class="info-panel__hint">Info-Overlay (Gate 8 baut das aus)</p>
-        <p class="info-panel__close-hint">B / Escape → Schließen</p>
+        <p class="info-panel__close-hint">${g.back} / Escape → Schließen</p>
       </div>
     `;
   }
@@ -189,10 +269,34 @@ const App = (() => {
     }, 2000);
   }
 
+  // ── Glyph UI Updates ──
+  function updateFocusBarGlyphs() {
+    const g = GlyphProfiles.get();
+    const keys = focusBar.querySelectorAll('.focus-bar__key');
+    keys.forEach(key => {
+      const action = key.getAttribute('data-action');
+      if (action && g[action]) {
+        key.textContent = g[action];
+      }
+    });
+  }
+
+  function updateGlyphIndicator() {
+    let indicator = document.getElementById('glyph-indicator');
+    if (!indicator) {
+      indicator = document.createElement('div');
+      indicator.id = 'glyph-indicator';
+      indicator.className = 'glyph-indicator';
+      document.getElementById('app').appendChild(indicator);
+    }
+    const profile = GlyphProfiles.get();
+    indicator.textContent = `🎮 ${profile.label}`;
+    indicator.title = 'Taste G: Glyph-Profil wechseln';
+  }
+
   // ── Keyboard (controller simulation) ──
   function bindKeys() {
     document.addEventListener('keydown', (e) => {
-      // Skip if info overlay is open (only B/Escape to close)
       const infoOpen = infoOverlay.getAttribute('data-visible') === 'true';
 
       switch (e.key) {
@@ -200,10 +304,18 @@ const App = (() => {
         case 'ArrowRight': if (!infoOpen) moveFocus('right'); break;
         case 'ArrowUp':    if (!infoOpen) moveFocus('up');    e.preventDefault(); break;
         case 'ArrowDown':  if (!infoOpen) moveFocus('down');  e.preventDefault(); break;
-        case 'Enter':      actionConfirm(); break;  // A / Confirm
-        case 'Escape':     actionBack();    break;  // B / Back
-        case 'i': case 'I': actionInfo();   break;  // X / Info
-        case 't': case 'T': actionTrailer(); break; // Y / Trailer
+        case 'Enter':      actionConfirm(); break;
+        case 'Escape':     actionBack();    break;
+        case 'i': case 'I': actionInfo();   break;
+        case 't': case 'T': actionTrailer(); break;
+        // Glyph profile cycling
+        case 'g': case 'G':
+          const newProfile = GlyphProfiles.cycle();
+          updateFocusBarGlyphs();
+          updateGlyphIndicator();
+          showToast(`Glyph-Profil: ${GlyphProfiles.get().label}`);
+          console.log(`Glyph profile: ${newProfile}`);
+          break;
         default: return;
       }
       e.stopPropagation();
@@ -219,11 +331,17 @@ const App = (() => {
     console.log(`Switched to profile: ${name}`);
   }
 
-  // Expose for console testing
-  return { init, switchProfile };
+  // ── Glyph profile switching (for testing) ──
+  function setGlyphProfile(name) {
+    if (GlyphProfiles.set(name)) {
+      updateFocusBarGlyphs();
+      updateGlyphIndicator();
+      showToast(`Glyph-Profil: ${GlyphProfiles.get().label}`);
+    }
+  }
+
+  return { init, switchProfile, setGlyphProfile };
 })();
 
 document.addEventListener('DOMContentLoaded', () => App.init());
-
-// Expose globally for console testing
 window.App = App;
