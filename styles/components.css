@@ -1,23 +1,182 @@
-/* Kids Launcher — Components */
+/* Kids Launcher — Components
+   Controller-first · Couch distance · Big targets */
+
+/* ── Header ── */
 .launcher-header {
-  padding: 2rem;
   text-align: center;
+  padding: var(--space-lg) 0 var(--space-md);
 }
 
 .launcher-title {
-  font-size: 2.5rem;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: var(--text-title);
+  font-weight: 800;
   color: var(--color-text);
+  letter-spacing: -0.02em;
 }
 
+/* ── Main area ── */
 .launcher-main {
   flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
 .launcher-loading {
-  font-size: 1.5rem;
+  font-size: var(--text-heading);
   color: var(--color-muted);
+  animation: pulse var(--motion-soft) infinite alternate;
+}
+
+@keyframes pulse {
+  from { opacity: 0.5; }
+  to   { opacity: 1; }
+}
+
+/* ── Library Grid (placeholder structure, filled Gate 6) ── */
+.library-grid {
+  display: grid;
+  grid-template-columns: var(--grid-columns);
+  gap: var(--grid-gap);
+  width: 100%;
+  max-width: 1400px;
+  padding: var(--space-md) 0;
+}
+
+/* ── Game Card (big touch/controller target) ── */
+.game-card {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--color-surface);
+  cursor: pointer;
+  transition: transform var(--motion-fast), box-shadow var(--motion-fast);
+}
+
+.game-card:focus-visible,
+.game-card[data-focused="true"] {
+  outline: none;
+  box-shadow:
+    0 0 0 4px var(--color-focus),
+    0 8px 32px rgba(255, 209, 102, 0.2);
+  transform: scale(1.04);
+  z-index: 2;
+}
+
+.game-card__cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.game-card__title {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--space-sm);
+  background: linear-gradient(transparent, rgba(0,0,0,0.8));
+  font-family: var(--font-display);
+  font-size: var(--text-caption);
+  font-weight: 700;
+  color: #fff;
+}
+
+/* ── Focus Bar (bottom: shows available actions) ── */
+.focus-bar {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-lg);
+  padding: var(--space-md) 0;
+  color: var(--color-muted);
+  font-size: var(--text-caption);
+}
+
+.focus-bar__action {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.focus-bar__key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0 0.75rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-weight: 700;
+  font-size: var(--text-caption);
+}
+
+/* ── Info Overlay (Gate 8 placeholder) ── */
+.info-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--color-overlay);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+}
+
+.info-overlay[data-visible="true"] {
+  display: flex;
+}
+
+.info-panel {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  max-width: 500px;
+  width: 90%;
+  color: var(--color-text);
+}
+
+/* ── Toast (launch feedback etc.) ── */
+.toast {
+  position: fixed;
+  bottom: var(--space-lg);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-surface);
+  color: var(--color-text);
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-md);
+  font-size: var(--text-body);
+  font-weight: 600;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  z-index: 200;
+  opacity: 0;
+  transition: opacity var(--motion-soft);
+  pointer-events: none;
+}
+
+.toast[data-visible="true"] {
+  opacity: 1;
+}
+
+/* ── Approval Badge ── */
+.badge-approved {
+  color: var(--color-approved);
+}
+
+.badge-blocked {
+  color: var(--color-blocked);
+}
+
+/* ── Glyph Profile Indicator (Gate 7 placeholder) ── */
+.glyph-indicator {
+  position: fixed;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  color: var(--color-muted);
+  font-size: var(--text-caption);
 }

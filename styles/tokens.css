@@ -1,7 +1,53 @@
-/* Kids Launcher — Design Tokens (placeholder, filled in Gate 4) */
+/* Kids Launcher — Design Tokens
+   Controller-first · Couch-distance · Warm library surface */
+
 :root {
-  --color-bg: #1a1a2e;
-  --color-surface: #25253e;
-  --color-text: #f0f0f0;
-  --color-muted: #8888aa;
+  /* ── Colors ── */
+  --color-bg:        #1b1b2f;      /* Deep calm background */
+  --color-surface:   #252540;      /* Card/panel surface */
+  --color-text:      #f5f0eb;      /* Warm white — not harsh */
+  --color-muted:     #8b8ba0;      /* Secondary text, hints */
+  --color-focus:     #ffd166;      /* Golden focus ring — visible on couch */
+  --color-approved:  #06d6a0;      /* Parent-approved state */
+  --color-blocked:   #ef476f;      /* Blocked/hidden state */
+  --color-overlay:   rgba(15, 15, 30, 0.85); /* Info overlay backdrop */
+
+  /* ── Spacing (couch-scale: generous) ── */
+  --space-xs:  0.5rem;    /*  8px */
+  --space-sm:  1rem;      /* 16px */
+  --space-md:  1.5rem;    /* 24px */
+  --space-lg:  2.5rem;    /* 40px */
+  --space-xl:  4rem;      /* 64px */
+  --space-2xl: 6rem;      /* 96px */
+
+  /* ── Radii ── */
+  --radius-sm:  0.5rem;
+  --radius-md:  1rem;
+  --radius-lg:  1.5rem;
+
+  /* ── Typography ── */
+  --font-display: 'Nunito', system-ui, sans-serif;
+  --font-body:    'Nunito', system-ui, sans-serif;
+  --text-title:   clamp(2rem, 4vw, 3.5rem);
+  --text-heading:  clamp(1.25rem, 2.5vw, 2rem);
+  --text-body:    clamp(1rem, 1.8vw, 1.5rem);
+  --text-caption: clamp(0.875rem, 1.2vw, 1.125rem);
+
+  /* ── Motion ── */
+  --motion-fast: 120ms ease-out;
+  --motion-soft: 300ms ease;
+
+  /* ── Grid (library) ── */
+  --grid-gap:       var(--space-md);
+  --grid-card-min:  180px;
+  --grid-card-max:  260px;
+  --grid-columns:   repeat(auto-fill, minmax(var(--grid-card-min), var(--grid-card-max)));
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-fast: 0ms;
+    --motion-soft: 0ms;
+  }
 }

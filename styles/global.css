@@ -1,19 +1,50 @@
 /* Kids Launcher — Global Styles */
+
+/* Google Fonts — Nunito: friendly, rounded, kid-approachable */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 body {
   background: var(--color-bg);
   color: var(--color-text);
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: 1.5;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 #app {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  padding: var(--space-lg);
+}
+
+/* Focus: visible for controller, suppressed for mouse */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
+}
+
+/* Selection */
+::selection {
+  background: var(--color-focus);
+  color: var(--color-bg);
 }
