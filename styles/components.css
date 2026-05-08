@@ -372,3 +372,85 @@
   align-items: center;
   gap: var(--space-xs);
 }
+
+
+/* ── Launch Overlay (Gate 10) ── */
+.launch-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--color-overlay);
+  z-index: 120;
+  align-items: center;
+  justify-content: center;
+}
+
+.launch-overlay[data-visible="true"] {
+  display: flex;
+}
+
+.launch-panel {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  max-width: 450px;
+  width: 90%;
+  color: var(--color-text);
+  text-align: center;
+}
+
+.launch-panel__title {
+  font-family: var(--font-display);
+  font-size: var(--text-heading);
+  font-weight: 700;
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.launch-panel__status {
+  padding: var(--space-lg) 0;
+}
+
+.launch-panel__status-icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-sm);
+}
+
+.launch-panel__status-icon--preparing {
+  animation: pulse 1s ease-in-out infinite alternate;
+}
+
+.launch-panel__status-icon--success {
+  animation: none;
+}
+
+.launch-panel__status-text {
+  font-family: var(--font-display);
+  font-size: var(--text-body);
+  font-weight: 600;
+  margin-bottom: var(--space-xs);
+}
+
+.launch-panel__status-detail {
+  color: var(--color-muted);
+  font-size: var(--text-caption);
+  word-break: break-all;
+}
+
+.launch-panel__actions {
+  margin-top: var(--space-md);
+  padding-top: var(--space-sm);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  gap: var(--space-lg);
+  justify-content: center;
+  color: var(--color-muted);
+  font-size: var(--text-caption);
+}
+
+.launch-panel__action {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
