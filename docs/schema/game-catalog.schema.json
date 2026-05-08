@@ -49,7 +49,9 @@
           "steam",
           "exec",
           "url",
-          "manual"
+          "manual",
+          "edge-xcloud",
+          "local-stub"
         ]
       },
       "launchTarget": {
@@ -185,6 +187,19 @@
             "hidden"
           ]
         }
+      },
+      "launchMode": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "description": "Launch execution mode",
+        "enum": [
+          null,
+          "protocol",
+          "fullscreen-edge-session",
+          "stub"
+        ]
       }
     }
   }

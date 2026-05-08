@@ -29,7 +29,8 @@
     "profiles": {
       "jake": "approved",
       "luke": "approved"
-    }
+    },
+    "launchMode": "protocol"
   },
   {
     "id": "minecraft",
@@ -61,7 +62,8 @@
     "profiles": {
       "jake": "approved",
       "luke": "approved"
-    }
+    },
+    "launchMode": "protocol"
   },
   {
     "id": "rocket-league",
@@ -91,7 +93,8 @@
     "profiles": {
       "jake": "approved",
       "luke": "blocked"
-    }
+    },
+    "launchMode": "protocol"
   },
   {
     "id": "stardew-valley",
@@ -123,14 +126,15 @@
     "profiles": {
       "jake": "needs-review",
       "luke": "unknown"
-    }
+    },
+    "launchMode": "protocol"
   },
   {
     "id": "fortnite",
     "title": "Fortnite",
     "source": "epic",
-    "launchType": "exec",
-    "launchTarget": "com.epicgames.launcher://apps/Fortnite?action=launch",
+    "launchType": "edge-xcloud",
+    "launchTarget": "https://www.xbox.com/play/games/fortnite/BT5P2X999VH2",
     "coverImage": "assets/covers/fortnite.jpg",
     "trailerUrl": "https://www.youtube.com/watch?v=WJW_lL1SVJo",
     "players": {
@@ -155,13 +159,14 @@
     "profiles": {
       "jake": "approved",
       "luke": "blocked"
-    }
+    },
+    "launchMode": "fullscreen-edge-session"
   },
   {
     "id": "zelda-totk",
     "title": "The Legend of Zelda: Tears of the Kingdom",
     "source": "nintendo",
-    "launchType": "exec",
+    "launchType": "local-stub",
     "launchTarget": "switch://0100F2C0115B6000",
     "coverImage": "assets/covers/zelda-totk.jpg",
     "trailerUrl": "https://www.youtube.com/watch?v=uHGShqcAHlQ",
@@ -187,7 +192,8 @@
     "profiles": {
       "jake": "approved",
       "luke": "hidden"
-    }
+    },
+    "launchMode": "stub"
   },
   {
     "id": "overcooked-2",
@@ -217,7 +223,8 @@
     "profiles": {
       "jake": "approved",
       "luke": "approved"
-    }
+    },
+    "launchMode": "protocol"
   },
   {
     "id": "cyberpunk-2077",
@@ -251,6 +258,7 @@
     "profiles": {
       "jake": "blocked",
       "luke": "blocked"
-    }
+    },
+    "launchMode": "protocol"
   }
 ]

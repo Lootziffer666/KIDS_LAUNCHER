@@ -3,6 +3,7 @@
    Gate 7: Glyph Profiles (Xbox / PlayStation / Nintendo)
    Gate 8: Small Info Window
    Gate 9: Trailer Overlay v0
+   Gate 10: Launch Adapter v0
    - Controller-first, couch-distance UI
    - No external navigation from child context */
 
@@ -100,6 +101,7 @@ const App = (() => {
   const toast = document.getElementById('toast');
   const infoOverlay = document.getElementById('info-overlay');
   const trailerOverlay = document.getElementById('trailer-overlay');
+  const launchOverlay = document.getElementById('launch-overlay');
 
   // ── Init ──
   async function init() {
@@ -213,16 +215,97 @@ const App = (() => {
   // ── Actions ──
   function actionConfirm() {
     if (filteredGames.length === 0) return;
-    const game = filteredGames[focusIndex];
-    // Close info overlay if open, then launch
+    // Don't launch if trailer is open
+    if (trailerOverlay.getAttribute('data-visible') === 'true') return;
+    // Close info overlay if open
     if (infoOverlay.getAttribute('data-visible') === 'true') {
       closeInfo();
     }
-    showToast(`Launch requested: ${game.title}`);
-    console.log(`[confirm] Would launch: ${game.launchTarget}`);
+    // Don't launch if launch overlay already showing
+    if (launchOverlay.getAttribute('data-visible') === 'true') return;
+    
+    const game = filteredGames[focusIndex];
+    openLaunchOverlay(game);
+  }
+
+  // ── Launch Overlay (Gate 10) ──
+  function openLaunchOverlay(game) {
+    launchOverlay.setAttribute('data-visible', 'true');
+    const g = GlyphProfiles.get();
+    
+    // Show "Preparing" state
+    const adapterInfo = LaunchAdapter.getAdapterInfo(game.launchType);
+    const adapterLabel = adapterInfo ? adapterInfo.label : game.launchType;
+    
+    launchOverlay.innerHTML = `
+      <div class="launch-panel" role="dialog" aria-label="Launch: ${game.title}">
+        <h2 class="launch-panel__title">${game.title}</h2>
+        <div class="launch-panel__status" id="launch-status">
+          <div class="launch-panel__status-icon launch-panel__status-icon--preparing">⏳</div>
+          <p class="launch-panel__status-text">Preparing…</p>
+          <p class="launch-panel__status-detail">${adapterLabel}</p>
+        </div>
+      </div>
+    `;
+    
+    // Simulate brief adapter delay, then execute
+    setTimeout(() => {
+      const result = LaunchAdapter.launch(game);
+      showLaunchResult(game, result, g);
+    }, 600);
+  }
+
+  function showLaunchResult(game, result, g) {
+    const statusEl = document.getElementById('launch-status');
+    if (!statusEl) return;
+    
+    let icon, statusClass;
+    switch (result.status) {
+      case 'requested':
+        icon = '🚀';
+        statusClass = 'launch-panel__status-icon--success';
+        break;
+      case 'not-available':
+        icon = '⚠️';
+        statusClass = 'launch-panel__status-icon--unavailable';
+        break;
+      case 'failed':
+        icon = '❌';
+        statusClass = 'launch-panel__status-icon--failed';
+        break;
+      default:
+        icon = '❓';
+        statusClass = '';
+    }
+    
+    statusEl.innerHTML = `
+      <div class="launch-panel__status-icon ${statusClass}">${icon}</div>
+      <p class="launch-panel__status-text">${result.message}</p>
+      ${result.detail ? `<p class="launch-panel__status-detail">${result.detail}</p>` : ''}
+      <div class="launch-panel__actions">
+        <span class="launch-panel__action">${g.back} Schließen</span>
+      </div>
+    `;
+    
+    // Auto-close on success after 2.5s
+    if (result.status === 'requested') {
+      setTimeout(() => {
+        closeLaunchOverlay();
+      }, 2500);
+    }
+  }
+
+  function closeLaunchOverlay() {
+    launchOverlay.setAttribute('data-visible', 'false');
+    launchOverlay.innerHTML = '';
+    updateFocus();
   }
 
   function actionBack() {
+    if (launchOverlay.getAttribute('data-visible') === 'true') {
+      closeLaunchOverlay();
+      return;
+    }
     if (trailerOverlay.getAttribute('data-visible') === 'true') {
       closeTrailer();
       return;
@@ -436,7 +519,8 @@ const App = (() => {
     document.addEventListener('keydown', (e) => {
       const infoOpen = infoOverlay.getAttribute('data-visible') === 'true';
       const trailerOpen = trailerOverlay.getAttribute('data-visible') === 'true';
-      const overlayOpen = infoOpen || trailerOpen;
+      const launchOpen = launchOverlay.getAttribute('data-visible') === 'true';
+      const overlayOpen = infoOpen || trailerOpen || launchOpen;
 
       switch (e.key) {
         case 'ArrowLeft':  if (!overlayOpen) moveFocus('left');  break;
