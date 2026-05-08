@@ -269,3 +269,106 @@
   align-items: center;
   gap: var(--space-xs);
 }
+
+
+/* ── Trailer Overlay (Gate 9) ── */
+.trailer-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--color-overlay);
+  z-index: 110;
+  align-items: center;
+  justify-content: center;
+}
+
+.trailer-overlay[data-visible="true"] {
+  display: flex;
+}
+
+.trailer-panel {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  max-width: 500px;
+  width: 90%;
+  color: var(--color-text);
+}
+
+.trailer-panel--video {
+  max-width: 800px;
+}
+
+.trailer-panel__title {
+  font-family: var(--font-display);
+  font-size: var(--text-heading);
+  font-weight: 700;
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Video container: 16:9 responsive */
+.trailer-panel__video-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 */
+  margin-bottom: var(--space-md);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: #000;
+}
+
+.trailer-panel__iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Empty state */
+.trailer-panel__empty,
+.trailer-panel__placeholder {
+  text-align: center;
+  padding: var(--space-xl) 0;
+}
+
+.trailer-panel__empty-icon,
+.trailer-panel__placeholder-icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-sm);
+  opacity: 0.6;
+}
+
+.trailer-panel__empty-text,
+.trailer-panel__placeholder-text {
+  font-family: var(--font-display);
+  font-size: var(--text-body);
+  font-weight: 600;
+  margin-bottom: var(--space-xs);
+}
+
+.trailer-panel__empty-hint,
+.trailer-panel__placeholder-hint {
+  color: var(--color-muted);
+  font-size: var(--text-caption);
+}
+
+.trailer-panel__actions {
+  margin-top: var(--space-md);
+  padding-top: var(--space-sm);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  gap: var(--space-lg);
+  justify-content: center;
+  color: var(--color-muted);
+  font-size: var(--text-caption);
+}
+
+.trailer-panel__action {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}

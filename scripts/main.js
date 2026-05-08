@@ -1,8 +1,10 @@
 /* Kids Launcher — Main Script
    Gate 6: Library Grid v0
    Gate 7: Glyph Profiles (Xbox / PlayStation / Nintendo)
-   - Display-only toggle, internal actions unchanged
-   - Stored in localStorage */
+   Gate 8: Small Info Window
+   Gate 9: Trailer Overlay v0
+   - Controller-first, couch-distance UI
+   - No external navigation from child context */
 
 'use strict';
 
@@ -97,6 +99,7 @@ const App = (() => {
   const focusBar = document.getElementById('focus-bar');
   const toast = document.getElementById('toast');
   const infoOverlay = document.getElementById('info-overlay');
+  const trailerOverlay = document.getElementById('trailer-overlay');
 
   // ── Init ──
   async function init() {
@@ -220,6 +223,10 @@ const App = (() => {
   }
 
   function actionBack() {
+    if (trailerOverlay.getAttribute('data-visible') === 'true') {
+      closeTrailer();
+      return;
+    }
     if (infoOverlay.getAttribute('data-visible') === 'true') {
       closeInfo();
       return;
@@ -235,13 +242,101 @@ const App = (() => {
 
   function actionTrailer() {
     if (filteredGames.length === 0) return;
+    // Don't open trailer if info is open
+    if (infoOverlay.getAttribute('data-visible') === 'true') return;
+    // Don't open if trailer already open
+    if (trailerOverlay.getAttribute('data-visible') === 'true') return;
     const game = filteredGames[focusIndex];
-    if (game.trailerUrl) {
-      showToast(`Trailer: ${game.title}`);
-      console.log(`[trailer] URL: ${game.trailerUrl}`);
-    } else {
-      showToast('Kein Trailer verfügbar.');
+    openTrailer(game);
+  }
+
+  // ── Trailer Overlay (Gate 9) ──
+  function openTrailer(game) {
+    trailerOverlay.setAttribute('data-visible', 'true');
+    const g = GlyphProfiles.get();
+
+    if (!game.trailerUrl) {
+      // Empty state — friendly message, no error
+      trailerOverlay.innerHTML = `
+        <div class="trailer-panel" role="dialog" aria-label="Trailer: ${game.title}">
+          <h2 class="trailer-panel__title">${game.title}</h2>
+          <div class="trailer-panel__empty">
+            <div class="trailer-panel__empty-icon">🎬</div>
+            <p class="trailer-panel__empty-text">Kein Trailer verfügbar.</p>
+            <p class="trailer-panel__empty-hint">Vielleicht wird später einer hinzugefügt.</p>
+          </div>
+          <div class="trailer-panel__actions">
+            <span class="trailer-panel__action">${g.back} Schließen</span>
+          </div>
+        </div>
+      `;
+      console.log(`[trailer] No trailer for: ${game.id}`);
+      return;
     }
+
+    // Extract YouTube video ID for controlled embed
+    const ytId = extractYouTubeId(game.trailerUrl);
+
+    if (ytId) {
+      // Controlled YouTube embed: no related, no annotations, no autoplay
+      // youtube-nocookie.com for enhanced privacy
+      trailerOverlay.innerHTML = `
+        <div class="trailer-panel trailer-panel--video" role="dialog" aria-label="Trailer: ${game.title}">
+          <h2 class="trailer-panel__title">${game.title}</h2>
+          <div class="trailer-panel__video-container">
+            <iframe
+              class="trailer-panel__iframe"
+              src="https://www.youtube-nocookie.com/embed/${ytId}?rel=0&modestbranding=1&showinfo=0&iv_load_policy=3&fs=0&disablekb=0"
+              title="Trailer: ${game.title}"
+              allow="accelerometer; encrypted-media; gyroscope"
+              allowfullscreen="false"
+              frameborder="0"
+              sandbox="allow-scripts allow-same-origin"
+            ></iframe>
+          </div>
+          <div class="trailer-panel__actions">
+            <span class="trailer-panel__action">${g.back} Schließen</span>
+          </div>
+        </div>
+      `;
+      console.log(`[trailer] Embedded YouTube (nocookie): ${ytId}`);
+    } else {
+      // Non-YouTube URL: show placeholder with URL info, don't navigate away
+      trailerOverlay.innerHTML = `
+        <div class="trailer-panel" role="dialog" aria-label="Trailer: ${game.title}">
+          <h2 class="trailer-panel__title">${game.title}</h2>
+          <div class="trailer-panel__placeholder">
+            <div class="trailer-panel__placeholder-icon">🎬</div>
+            <p class="trailer-panel__placeholder-text">Trailer vorhanden</p>
+            <p class="trailer-panel__placeholder-hint">Externer Player wird in einer späteren Version kontrolliert eingebunden.</p>
+          </div>
+          <div class="trailer-panel__actions">
+            <span class="trailer-panel__action">${g.back} Schließen</span>
+          </div>
+        </div>
+      `;
+      console.log(`[trailer] Non-YouTube URL (stub): ${game.trailerUrl}`);
+    }
+  }
+
+  function closeTrailer() {
+    trailerOverlay.setAttribute('data-visible', 'false');
+    // Remove iframe to stop playback immediately
+    trailerOverlay.innerHTML = '';
+    updateFocus();
+  }
+
+  function extractYouTubeId(url) {
+    if (!url) return null;
+    // Match youtube.com/watch?v=ID, youtu.be/ID, youtube.com/embed/ID
+    const patterns = [
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/
+    ];
+    for (const p of patterns) {
+      const m = url.match(p);
+      if (m) return m[1];
+    }
+    return null;
   }
 
   // ── Info Overlay (Gate 8: Small Info Window) ──
@@ -340,12 +435,14 @@ const App = (() => {
   function bindKeys() {
     document.addEventListener('keydown', (e) => {
       const infoOpen = infoOverlay.getAttribute('data-visible') === 'true';
+      const trailerOpen = trailerOverlay.getAttribute('data-visible') === 'true';
+      const overlayOpen = infoOpen || trailerOpen;
 
       switch (e.key) {
-        case 'ArrowLeft':  if (!infoOpen) moveFocus('left');  break;
-        case 'ArrowRight': if (!infoOpen) moveFocus('right'); break;
-        case 'ArrowUp':    if (!infoOpen) moveFocus('up');    e.preventDefault(); break;
-        case 'ArrowDown':  if (!infoOpen) moveFocus('down');  e.preventDefault(); break;
+        case 'ArrowLeft':  if (!overlayOpen) moveFocus('left');  break;
+        case 'ArrowRight': if (!overlayOpen) moveFocus('right'); break;
+        case 'ArrowUp':    if (!overlayOpen) moveFocus('up');    e.preventDefault(); break;
+        case 'ArrowDown':  if (!overlayOpen) moveFocus('down');  e.preventDefault(); break;
         case 'Enter':      actionConfirm(); break;
         case 'Escape':     actionBack();    break;
         case 'i': case 'I': actionInfo();   break;
